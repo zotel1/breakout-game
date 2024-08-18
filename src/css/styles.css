@@ -55,5 +55,15 @@ canvas {
     top: 0;
     left: 0;
     background: #333;
-    
+    color: #fff;
+    min-height: 100vh;
+    width: 400px;
+    padding: 20px;
+    line-height: 1.5;
+    transform: translateX(-400px);
+    transition: transform 1s ease-in-out;
+}
+
+.rules.show {
+    transform: translateX(0);
 }
