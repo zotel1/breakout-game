@@ -60,3 +60,13 @@ for (let i = 0; i < bloqueRowCount; i++) {
     }
 }
 
+// Draw ball on canvas
+
+function drawBall() {
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
+    ctx.fillStyle = 'green';
+    ctx.fill();
+    ctx.closePath();
+}
+
