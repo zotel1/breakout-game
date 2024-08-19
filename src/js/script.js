@@ -10,9 +10,9 @@ const ctx = canvas.getContext('2d');
 
 let score = 0;
 
-const brickRowCount = 9;
+const bloqueRowCount = 9;
 
-const brickColumnCount = 5;
+const bloqueColumnCount = 5;
 
 
 // Creamos la propiedades de la pelota
@@ -36,3 +36,27 @@ const barra = {
     speed: 8,
     dx: 0
 };
+
+// Creamos propiedades de los bloques
+
+const bloquesInfo = {
+    w: 70,
+    h: 20,
+    padding: 10,
+    offsetX: 45,
+    offsetY: 60,
+    visible: true
+};
+
+// Creamos bloques
+
+const bloques = [];
+for (let i = 0; i < bloqueRowCount; i++) {
+    bloques[i] = [];
+    for(let j = 0; j < bloqueColumnCount; j++) {
+        const x = i * (bloquesInfo.w + bloquesInfo.padding) + bloquesInfo.offsetX;
+        const y = j * (bloquesInfo.h + bloquesInfo.padding) + bloquesInfo.offsetY;
+        bloques[i][j] = { x, y, ...bloquesInfo };
+    }
+}
+
