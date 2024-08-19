@@ -70,3 +70,12 @@ function drawBall() {
     ctx.closePath();
 }
 
+// Draw paddle on canvas
+function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddle.x, paddle.y, paddle.w, paddle.h);
+    ctx.fillStyle = 'green';
+    ctx.fill();
+    ctx.closePath();
+}
+
