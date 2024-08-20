@@ -79,3 +79,57 @@ function drawPaddle() {
     ctx.closePath();
 }
 
+//Draw score on canvas
+
+function drawScore() {
+    ctx.font = '20px Arial';
+    ctx.fillText(`Score: ${score}`, canvas.width - 100, 30);
+}
+
+// Draw bricks on canvas
+function drawBloques() {
+    bloques.forEach(column => {
+        column.forEach(bloques => {
+            ctx.beginPath();
+            ctx.rect(bloques.x, bloques.y, bloques.w, bloques.h);
+            ctx.fillStyle = bloques.visible ? 'green' : 'transparent';
+            ctx.fill();
+            ctx.closePath();
+        })
+    })
+
+}
+
+// Mover la paleta sobre la pantalla
+function movePaddle() {
+    paddle.x += paddle.dx;
+
+    // Wall detection
+    if(paddle.x +paddle.w > canvas.width) {
+        paddle.x = canvas.width - paddle.w;
+    }
+
+    if(paddle.x < 0) {
+        paddle.x  = 0;
+    }
+}
+
+// Mover la pelota en el lienso
+
+function moveBall() {
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+
+    // Wall collision (right/left)
+
+if(ball.x + ball.size > canvas.width || ball.x - ball.size < 0 ) {
+    ball.dx *= -1; // ball.dx = ball.dx * -1
+}
+
+// Wall collision(top/bottom)
+if(ball.y + ball.size > canvas.height || ball.y - ball.size < 0) {
+    ball.dy *= -1;
+}
+
+
+}
