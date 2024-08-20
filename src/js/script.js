@@ -131,5 +131,109 @@ if(ball.y + ball.size > canvas.height || ball.y - ball.size < 0) {
     ball.dy *= -1;
 }
 
-
+// Colision de la paleta
+if (
+    ball.x - ball.size > paddle.x &&
+    ball.x + ball.size < paddle.x + paddle.w &&
+    ball.y + ball.size > paddle.y
+) {
+    ball.dy = -ball.speed;
 }
+
+// Colision de bloques
+bloques.forEach(column => {
+    column.forEach(bloques => {
+        if(bloques.visible) {
+            if(
+                ball.x - ball.size > bloques.x && // Left bloques side check
+                ball.x + ball.size < bloques.x + bloques.w && // derecha bloques side check
+                ball.y + ball.size > bloques.y && // top bloques sude check
+                ball.y - ball.size < bloques.y + bloques.h // Bottom bloques side check
+            ) {
+                ball.dy *= -1;
+                bloqueColumnCount.visible = false;
+
+                increaseScore();
+            }
+        }
+    });
+});
+
+// Hit bottom wall -lose
+if(ball.y + ball.size > canvas.height) {
+    showAllBloques();
+    score = 0;
+}
+}
+// increase Score
+function increaseScore() {
+    score++;
+
+    if(score % (bloqueRowCount * bloqueRowCount) === 0) {
+        showAllBloques();
+    }
+}
+
+// Make all bloques appear
+function showAllBloques() {
+    bloques.forEach(column => {
+        column.forEach(bloques => (bloques.visible = true));
+    });
+}
+
+// Draw everything
+function draw() {
+    // Clear canvas
+
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+
+    drawBall();
+    drawPaddle();
+    drawScore();
+    drawBloques();
+}
+
+//Update canvas drawing and animation
+
+function update() {
+    movePaddle();
+    moveBall();
+
+    // draw everithing
+    draw();
+
+    requestAnimationFrame(update);
+}
+
+update();
+
+//Keydown event
+
+function Keydown(e) {
+    if(e.key === 'Right' || e.key === 'ArrowRight') {
+        paddle.dx = paddle.speed
+    } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
+        paddle.dx = -paddle.speed
+    }
+}
+
+// Keyup evant
+function Keyup(e) {
+    if(
+        e.key === 'Right' ||
+        e.key === 'ArrowRight' ||
+        e.key === 'Left' ||
+        e.key === 'ArrowLeft'
+    ) {
+        paddle.dx = 0;
+    }
+}
+
+// Keyboard evant handlers
+document.addEventListener('keydown', Keydown);
+document.addEventListener('keyup', Keyup);
+
+// Rules and close  event handlers
+rulesBtn.addEventListener('click', () => rules.classList.add('show'));
+closeBtn.addEventListener('click', () => rules.classList.remove('show'));
+
