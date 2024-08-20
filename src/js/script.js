@@ -10,9 +10,9 @@ const ctx = canvas.getContext('2d');
 
 let score = 0;
 
-const bloqueRowCount = 9;
+const brickRowCount = 9;
 
-const bloqueColumnCount = 5;
+const brickColumnCount = 5;
 
 
 // Creamos la propiedades de la pelota
@@ -28,7 +28,7 @@ const ball = {
 
 // Creamos las propiedades de la barra
 
-const barra = {
+const paddle = {
     x: canvas.width / 2 -40,
     y: canvas.height -20,
     w: 80,
@@ -39,7 +39,7 @@ const barra = {
 
 // Creamos propiedades de los bloques
 
-const bloquesInfo = {
+const brickInfo = {
     w: 70,
     h: 20,
     padding: 10,
@@ -48,15 +48,16 @@ const bloquesInfo = {
     visible: true
 };
 
-// Creamos bloques
+// Creamos brick
 
-const bloques = [];
-for (let i = 0; i < bloqueRowCount; i++) {
-    bloques[i] = [];
-    for(let j = 0; j < bloqueColumnCount; j++) {
-        const x = i * (bloquesInfo.w + bloquesInfo.padding) + bloquesInfo.offsetX;
-        const y = j * (bloquesInfo.h + bloquesInfo.padding) + bloquesInfo.offsetY;
-        bloques[i][j] = { x, y, ...bloquesInfo };
+
+const brick = [];
+for (let i = 0; i < brickRowCount; i++) {
+    brick[i] = [];
+    for(let j = 0; j < brickColumnCount; j++) {
+        const x = i * (brickInfo.w + brickInfo.padding) + brickInfo.offsetX;
+        const y = j * (brickInfo.h + brickInfo.padding) + brickInfo.offsetY;
+        brick[i][j] = { x, y, ...brickInfo };
     }
 }
 
@@ -65,7 +66,7 @@ for (let i = 0; i < bloqueRowCount; i++) {
 function drawBall() {
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = '#b100dd';
     ctx.fill();
     ctx.closePath();
 }
@@ -74,7 +75,7 @@ function drawBall() {
 function drawPaddle() {
     ctx.beginPath();
     ctx.rect(paddle.x, paddle.y, paddle.w, paddle.h);
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = '#b100dd';
     ctx.fill();
     ctx.closePath();
 }
@@ -87,12 +88,12 @@ function drawScore() {
 }
 
 // Draw bricks on canvas
-function drawBloques() {
-    bloques.forEach(column => {
-        column.forEach(bloques => {
+function drawBricks() {
+    brick.forEach(column => {
+        column.forEach(brick => {
             ctx.beginPath();
-            ctx.rect(bloques.x, bloques.y, bloques.w, bloques.h);
-            ctx.fillStyle = bloques.visible ? 'green' : 'transparent';
+            ctx.rect(brick.x, brick.y, brick.w, brick.h);
+            ctx.fillStyle = brick.visible ? '#b100dd' : 'transparent';
             ctx.fill();
             ctx.closePath();
         })
@@ -141,17 +142,17 @@ if (
 }
 
 // Colision de bloques
-bloques.forEach(column => {
-    column.forEach(bloques => {
-        if(bloques.visible) {
+brick.forEach(column => {
+    column.forEach(brick => {
+        if(brick.visible) {
             if(
-                ball.x - ball.size > bloques.x && // Left bloques side check
-                ball.x + ball.size < bloques.x + bloques.w && // derecha bloques side check
-                ball.y + ball.size > bloques.y && // top bloques sude check
-                ball.y - ball.size < bloques.y + bloques.h // Bottom bloques side check
+                ball.x - ball.size > brick.x && // Left bloques side check
+                ball.x + ball.size < brick.x + brick.w && // derecha bloques side check
+                ball.y + ball.size > brick.y && // top bloques sude check
+                ball.y - ball.size < brick.y + brick.h // Bottom bloques side check
             ) {
                 ball.dy *= -1;
-                bloqueColumnCount.visible = false;
+                brickColumnCount.visible = false;
 
                 increaseScore();
             }
@@ -161,7 +162,7 @@ bloques.forEach(column => {
 
 // Hit bottom wall -lose
 if(ball.y + ball.size > canvas.height) {
-    showAllBloques();
+    showAllBrick();
     score = 0;
 }
 }
@@ -169,15 +170,15 @@ if(ball.y + ball.size > canvas.height) {
 function increaseScore() {
     score++;
 
-    if(score % (bloqueRowCount * bloqueRowCount) === 0) {
-        showAllBloques();
+    if(score % (brickRowCount * brickRowCount) === 0) {
+        showAllBrick();
     }
 }
 
 // Make all bloques appear
-function showAllBloques() {
-    bloques.forEach(column => {
-        column.forEach(bloques => (bloques.visible = true));
+function showAllBrick() {
+    brick.forEach(column => {
+        column.forEach(brick => (brick.visible = true));
     });
 }
 
@@ -190,7 +191,7 @@ function draw() {
     drawBall();
     drawPaddle();
     drawScore();
-    drawBloques();
+    drawBricks();
 }
 
 //Update canvas drawing and animation
