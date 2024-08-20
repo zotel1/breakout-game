@@ -1,39 +1,223 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./src/css/styles.css">
-    
-    <title>Breakout Game🎮</title>
+    <title>Juego de Bloques</title>
+    <style>
+        /* Estilos básicos para centrar el menú de dificultad */
+        #difficulty-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #canvas {
+            display: none;
+            /* Ocultar canvas al inicio */
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Breakout</h1>
-    <button id="rules-btn" class="btn rules-btn">¡Mostrar Reglas!</button>
-    <div id="rules" class="rules">
-        <h2>Como jugar:</h2>
-        <p>Usa las teclas izquierda y derecha para mover la barra,
-            hacer rebotar la pelota y romper los bloques. </p>
-            <p>
-            Si fallas el balón, tu puntuación y los bloques se reestablecerán.
-        </p>
-        <button id="close-btn" class="btn">Cerrar</button>
-    </div>
-    <div id="start-screen">
+
+    <div id="difficulty-menu">
         <h1>Selecciona la Dificultad</h1>
         <button id="easy-btn">Fácil</button>
         <button id="normal-btn">Normal</button>
         <button id="hard-btn">Difícil</button>
     </div>
-    
-    
-    <div id="rules" class="rules">
-        <!-- Resto de tu HTML para las reglas -->
-    </div>
 
     <canvas id="canvas" width="800" height="600"></canvas>
-    
-    <script src="./src/js/script.js"></script>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let score = 0;
+        let brickRowCount;
+        let brickColumnCount;
+
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 10,
+            speed: 4,
+            dx: 4,
+            dy: -4
+        };
+
+        const paddle = {
+            x: canvas.width / 2 - 40,
+            y: canvas.height - 20,
+            w: 80,
+            h: 10,
+            speed: 8,
+            dx: 0
+        };
+
+        const brickInfo = {
+            w: 70,
+            h: 20,
+            padding: 10,
+            offsetX: 45,
+            offsetY: 60,
+            visible: true
+        };
+
+        let brick = [];
+
+        function createBricks() {
+            brick = [];
+            for (let i = 0; i < brickRowCount; i++) {
+                brick[i] = [];
+                for (let j = 0; j < brickColumnCount; j++) {
+                    const x = i * (brickInfo.w + brickInfo.padding) + brickInfo.offsetX;
+                    const y = j * (brickInfo.h + brickInfo.padding) + brickInfo.offsetY;
+                    brick[i][j] = { x, y, ...brickInfo };
+                }
+            }
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
+            ctx.fillStyle = '#b100dd';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.rect(paddle.x, paddle.y, paddle.w, paddle.h);
+            ctx.fillStyle = '#b100dd';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawScore() {
+            ctx.font = '20px Arial';
+            ctx.fillText(`Score: ${score}`, canvas.width - 100, 30);
+        }
+
+        function drawBricks() {
+            brick.forEach(column => {
+                column.forEach(brick => {
+                    ctx.beginPath();
+                    ctx.rect(brick.x, brick.y, brick.w, brick.h);
+                    ctx.fillStyle = brick.visible ? '#b100dd' : 'transparent';
+                    ctx.fill();
+                    ctx.closePath();
+                });
+            });
+        }
+
+        function movePaddle() {
+            paddle.x += paddle.dx;
+
+            if (paddle.x + paddle.w > canvas.width) {
+                paddle.x = canvas.width - paddle.w;
+            }
+
+            if (paddle.x < 0) {
+                paddle.x = 0;
+            }
+        }
+
+        function moveBall() {
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            if (ball.x + ball.size > canvas.width || ball.x - ball.size < 0) {
+                ball.dx *= -1;
+            }
+
+            if (ball.y + ball.size > canvas.height || ball.y - ball.size < 0) {
+                ball.dy *= -1;
+            }
+
+            if (
+                ball.x - ball.size > paddle.x &&
+                ball.x + ball.size < paddle.x + paddle.w &&
+                ball.y + ball.size > paddle.y
+            ) {
+                ball.dy = -ball.speed;
+            }
+
+            brick.forEach(column => {
+                column.forEach(brick => {
+                    if (brick.visible) {
+                        if (
+                            ball.x - ball.size > brick.x &&
+                            ball.x + ball.size < brick.x + brick.w &&
+                            ball.y + ball.size > brick.y &&
+                            ball.y - ball.size < brick.y + brick.h
+                        ) {
+                            ball.dy *= -1;
+                            brick.visible = false;
+                            increaseScore();
+                        }
+                    }
+                });
+            });
+
+            if (ball.y + ball.size > canvas.height) {
+                showAllBrick();
+                score = 0;
+            }
+        }
+
+        function increaseScore() {
+            score++;
+
+            if (score % (brickRowCount * brickColumnCount) === 0) {
+                showAllBrick();
+            }
+        }
+
+        function showAllBrick() {
+            brick.forEach(column => {
+                column.forEach(brick => (brick.visible = true));
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBall();
+            drawPaddle();
+            drawScore();
+            drawBricks();
+        }
+
+        function update() {
+            movePaddle();
+            moveBall();
+            draw();
+            requestAnimationFrame(update);
+        }
+
+        document.getElementById('easy-btn').addEventListener('click', () => startGame(9, 5));
+        document.getElementById('normal-btn').addEventListener('click', () => startGame(14, 7));
+        document.getElementById('hard-btn').addEventListener('click', () => startGame(18, 10));
+
+        function startGame(rows, columns) {
+            brickRowCount = rows;
+            brickColumnCount = columns;
+            createBricks();
+            document.getElementById('difficulty-menu').style.display = 'none';
+            canvas.style.display = 'block';
+            update();
+        }
+    </script>
 </body>
+
 </html>
