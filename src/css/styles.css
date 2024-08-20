@@ -67,3 +67,16 @@ canvas {
 .rules.show {
     transform: translateX(0);
 }
+
+#canvas,
+#rules {
+    display: none;
+}
+
+#start-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
