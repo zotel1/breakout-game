@@ -53,6 +53,84 @@ function createBricks() {
     }
 }
 
+let animationId;
+
+function update() {
+    console.time('update');
+
+    console.time('movePaddle');
+    movePaddle();
+    console.timeEnd('movePaddle');
+
+    console.time('moveBall');
+    moveBall();
+    console.timeEnd('moveBall');
+
+    console.time('draw');
+    draw();
+    console.timeEnd('draw');
+
+    console.timeEnd('update');
+
+    animationId = requestAnimationFrame(update);
+}
+
+// Pérdida de la bola al tocar el fondo
+function checkGameOver() {
+    if (ball.y + ball.size > canvas.height) {
+        console.log('Game Over');
+        cancelAnimationFrame(animationId); // Detener la animación
+        alert('¡Perdiste!');
+        resetGame(); // Reiniciar el juego
+    }
+}
+
+function moveBall() {
+    ball.x += ball.dx;
+    ball.y += ball.dy;
+
+    // Colisión con paredes laterales
+    if (ball.x + ball.size > canvas.width || ball.x - ball.size < 0) {
+        ball.dx *= -1;
+    }
+
+    // Colisión con la parte superior/inferior
+    if (ball.y - ball.size < 0) {
+        ball.dy *= -1;
+    }
+
+    // Colisión con la barra
+    if (
+        ball.x - ball.size > paddle.x &&
+        ball.x + ball.size < paddle.x + paddle.w &&
+        ball.y + ball.size > paddle.y
+    ) {
+        ball.dy = -ball.speed;
+    }
+
+    // Colisión con los bloques
+    brick.forEach(column => {
+        column.forEach(brick => {
+            if (brick.visible) {
+                if (
+                    ball.x - ball.size > brick.x &&
+                    ball.x + ball.size < brick.x + brick.w &&
+                    ball.y + ball.size > brick.y &&
+                    ball.y - ball.size < brick.y + brick.h
+                ) {
+                    ball.dy *= -1;
+                    brick.visible = false;
+
+                    increaseScore();
+                }
+            }
+        });
+    });
+
+    // Verificar si el juego ha terminado
+    checkGameOver();
+}
+
 const startGame = (rowCount, colCount) => {
     brickRowCount = rowCount;
     brickColumnCount = colCount;
@@ -63,12 +141,38 @@ const startGame = (rowCount, colCount) => {
     rules.style.display = 'none'; // Esconder reglas
     rulesBtn.disabled = true; // Deshabilitar botón de reglas
 
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+    ball.dx = 4;
+    ball.dy = -4;
+
     update();
 };
 
+const resetGame = () => {
+    cancelAnimationFrame(animationId); // Asegurarse de detener cualquier animación en curso
+    score = 0;
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+    ball.dx = 4;
+    ball.dy = -4;
+    paddle.x = canvas.width / 2 - paddle.w / 2;
+    createBricks();
+    startScreen.style.display = 'flex';
+    canvas.style.display = 'none';
+    rulesBtn.disabled = false; // Habilitar botón de reglas
+};
+
 // Asignar eventos para reglas y cerrar
-rulesBtn.addEventListener('click', () => rules.classList.add('show'));
-closeBtn.addEventListener('click', () => rules.classList.remove('show'));
+rulesBtn.addEventListener('click', () => {
+    rules.classList.add('show');
+    rules.style.display = 'block';
+});
+
+closeBtn.addEventListener('click', () => {
+    rules.classList.remove('show');
+    rules.style.display = 'none';
+});
 
 easyBtn.addEventListener('click', () => startGame(9, 5));
 normalBtn.addEventListener('click', () => startGame(9, 7));
@@ -125,59 +229,6 @@ function movePaddle() {
     }
 }
 
-// Mover la pelota en el lienzo
-function moveBall() {
-    ball.x += ball.dx;
-    ball.y += ball.dy;
-
-    // Colisión con paredes laterales
-    if (ball.x + ball.size > canvas.width || ball.x - ball.size < 0) {
-        ball.dx *= -1;
-    }
-
-    // Colisión con la parte superior/inferior
-    if (ball.y + ball.size > canvas.height || ball.y - ball.size < 0) {
-        ball.dy *= -1;
-    }
-
-    // Colisión con la barra
-    if (
-        ball.x - ball.size > paddle.x &&
-        ball.x + ball.size < paddle.x + paddle.w &&
-        ball.y + ball.size > paddle.y
-    ) {
-        ball.dy = -ball.speed;
-    }
-
-    // Colisión con los bloques
-    brick.forEach(column => {
-        column.forEach(brick => {
-            if (brick.visible) {
-                if (
-                    ball.x - ball.size > brick.x &&
-                    ball.x + ball.size < brick.x + brick.w &&
-                    ball.y + ball.size > brick.y &&
-                    ball.y - ball.size < brick.y + brick.h
-                ) {
-                    ball.dy *= -1;
-                    brick.visible = false;
-
-                    increaseScore();
-                }
-            }
-        });
-    });
-
-    // Pérdida de la bola al tocar el fondo
-    if (ball.y + ball.size > canvas.height) {
-        showAllBrick();
-        score = 0;
-        alert('¡Perdiste!');
-        startScreen.style.display = 'flex';
-        canvas.style.display = 'none';
-    }
-}
-
 // Aumentar puntaje
 function increaseScore() {
     score++;
@@ -202,17 +253,6 @@ function draw() {
     drawPaddle();
     drawScore();
     drawBricks();
-}
-
-// Actualizar la animación del juego
-function update() {
-    movePaddle();
-    moveBall();
-
-    // Dibujar todo de nuevo
-    draw();
-
-    requestAnimationFrame(update);
 }
 
 // Detectar la tecla presionada
