@@ -70,6 +70,7 @@ function update() {
 function checkGameOver() {
     if (ball.y + ball.size > canvas.height) {
         console.log('Game Over');
+        
         cancelAnimationFrame(animationId); // Detener la animación
         showGameOverScreen(); // Mostrar pantalla de Game Over
     }
@@ -155,6 +156,7 @@ const resetGame = () => {
     createBricks();
     startScreen.style.display = 'flex';
     canvas.style.display = 'none';
+    gameOverScreen.style.display = 'none'; // Esconder pantalla de Game Over
     rulesBtn.disabled = false; // Habilitar botón de reglas
 };
 
@@ -268,3 +270,4 @@ function keyUp(e) {
 
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
+
