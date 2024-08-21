@@ -52,6 +52,19 @@ function createBricks() {
         }
     }
 }
+const resetGame = () => {
+    cancelAnimationFrame(animationId); // Asegurarse de detener cualquier animación en curso
+    score = 0;
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+    ball.dx = 4;
+    ball.dy = -4;
+    paddle.x = canvas.width / 2 - paddle.w / 2;
+    createBricks();
+    startScreen.style.display = 'flex';
+    canvas.style.display = 'none';
+    rulesBtn.disabled = false; // Habilitar botón de reglas
+};
 
 let animationId;
 
@@ -74,6 +87,24 @@ function checkGameOver() {
         resetGame(); // Reiniciar el juego
     }
 }
+
+
+
+// Asignar eventos para reglas y cerrar
+rulesBtn.addEventListener('click', () => {
+    rules.classList.add('show');
+    rules.style.display = 'block';
+});
+
+closeBtn.addEventListener('click', () => {
+    rules.classList.remove('show');
+    rules.style.display = 'none';
+});
+
+easyBtn.addEventListener('click', () => startGame(9, 5));
+normalBtn.addEventListener('click', () => startGame(9, 7));
+hardBtn.addEventListener('click', () => startGame(9, 11));
+
 
 function moveBall() {
     ball.x += ball.dx;
@@ -121,37 +152,69 @@ function moveBall() {
     checkGameOver();
 }
 
+function checkGameOver() {
+    if (ball.y + ball.size > canvas.height) {
+        console.log('Game Over');
+        cancelAnimationFrame(animationId); // Detener la animación
+        alert('¡Perdiste!');
+        resetGame(); // Reiniciar el juego
+    }
+}
+
+
+// Asignar eventos para reglas y cerrar
+rulesBtn.addEventListener('click', () => {
+    rules.classList.add('show');
+    rules.style.display = 'block';
+});
+
+closeBtn.addEventListener('click', () => {
+    rules.classList.remove('show');
+    rules.style.display = 'none';
+});
+
+easyBtn.addEventListener('click', () => startGame(9, 5));
+normalBtn.addEventListener('click', () => startGame(9, 7));
+hardBtn.addEventListener('click', () => startGame(9, 11));
+
+
 const startGame = (rowCount, colCount) => {
-    brickRowCount = rowCount;
-    brickColumnCount = colCount;
-    createBricks();
+    if (rowCount && colCount) { // Verificar que se hayan pasado los parámetros de dificultad
+        brickRowCount = rowCount;
+        brickColumnCount = colCount;
+        createBricks();
 
-    startScreen.style.display = 'none';
-    canvas.style.display = 'block';
-    rules.style.display = 'none'; // Esconder reglas
-    rulesBtn.disabled = true; // Deshabilitar botón de reglas
+        startScreen.style.display = 'none';
+        canvas.style.display = 'block';
+        rules.style.display = 'none'; // Esconder reglas
+        rulesBtn.disabled = true; // Deshabilitar botón de reglas
 
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height / 2;
-    ball.dx = 4;
-    ball.dy = -4;
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height / 2;
+        ball.dx = 4;
+        ball.dy = -4;
 
-    update();
+        update();
+    } else {
+        alert('Por favor, selecciona una dificultad para comenzar el juego.');
+    }
 };
 
-const resetGame = () => {
-    cancelAnimationFrame(animationId); // Asegurarse de detener cualquier animación en curso
-    score = 0;
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height / 2;
-    ball.dx = 4;
-    ball.dy = -4;
-    paddle.x = canvas.width / 2 - paddle.w / 2;
-    createBricks();
-    startScreen.style.display = 'flex';
-    canvas.style.display = 'none';
-    rulesBtn.disabled = false; // Habilitar botón de reglas
-};
+// Asignar eventos para reglas y cerrar
+rulesBtn.addEventListener('click', () => {
+    rules.classList.add('show');
+    rules.style.display = 'block';
+});
+
+closeBtn.addEventListener('click', () => {
+    rules.classList.remove('show');
+    rules.style.display = 'none';
+});
+
+easyBtn.addEventListener('click', () => startGame(9, 5));
+normalBtn.addEventListener('click', () => startGame(9, 7));
+hardBtn.addEventListener('click', () => startGame(9, 11));
+
 
 // Asignar eventos para reglas y cerrar
 rulesBtn.addEventListener('click', () => {
