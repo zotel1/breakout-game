@@ -8,7 +8,6 @@ const rulesBtn = document.getElementById('rules-btn');
 const closeBtn = document.getElementById('close-btn');
 const rules = document.getElementById('rules');
 const gameOverScreen = document.getElementById('game-over-screen');
-const retryBtn = document.getElementById('retry-btn');
 
 let score = 0;
 let brickRowCount;
@@ -70,7 +69,6 @@ function update() {
 function checkGameOver() {
     if (ball.y + ball.size > canvas.height) {
         console.log('Game Over');
-        
         cancelAnimationFrame(animationId); // Detener la animación
         showGameOverScreen(); // Mostrar pantalla de Game Over
     }
@@ -163,6 +161,7 @@ const resetGame = () => {
 function showGameOverScreen() {
     gameOverScreen.style.display = 'flex';
     canvas.style.display = 'none';
+    setTimeout(resetGame, 1000); // Esperar 3 segundos antes de reiniciar el juego
 }
 
 rulesBtn.addEventListener('click', () => {
@@ -178,7 +177,6 @@ closeBtn.addEventListener('click', () => {
 easyBtn.addEventListener('click', () => startGame(9, 5));
 normalBtn.addEventListener('click', () => startGame(9, 7));
 hardBtn.addEventListener('click', () => startGame(9, 11));
-retryBtn.addEventListener('click', resetGame);
 
 function drawBall() {
     ctx.beginPath();
@@ -270,4 +268,3 @@ function keyUp(e) {
 
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
-
