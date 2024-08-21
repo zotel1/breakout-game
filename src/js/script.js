@@ -1,34 +1,32 @@
-const rulesBtn = document.getElementById('rules-btn');
-const closeBtn = document.getElementById('close-btn');
-const rules = document.getElementById('rules');
+const startScreen = document.getElementById('start-screen');
+const easyBtn = document.getElementById('easy-btn');
+const normalBtn = document.getElementById('normal-btn');
+const hardBtn = document.getElementById('hard-btn');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 let score = 0;
-const brickRowCount = 9;
-const brickColumnCount = 5;
+let brickRowCount;
+let brickColumnCount;
 
-// Propiedades de la pelota
 const ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     size: 10,
-    speed: 4,
+    speed: 2,
     dx: 4,
     dy: -4
 };
 
-// Propiedades de la barra
 const paddle = {
     x: canvas.width / 2 - 40,
     y: canvas.height - 20,
     w: 80,
     h: 10,
-    speed: 8,
+    speed: 9,
     dx: 0
 };
 
-// Propiedades de los bloques
 const brickInfo = {
     w: 70,
     h: 20,
@@ -38,8 +36,43 @@ const brickInfo = {
     visible: true
 };
 
+let brick = [];
+
+function createBricks() {
+    brick = [];
+    for (let i = 0; i < brickRowCount; i++) {
+        brick[i] = [];
+        for (let j = 0; j < brickColumnCount; j++) {
+            const x = i * (brickInfo.w + brickInfo.padding) + brickInfo.offsetX;
+            const y = j * (brickInfo.h + brickInfo.padding) + brickInfo.offsetY;
+            brick[i][j] = { x, y, ...brickInfo };
+        }
+    }
+}
+
+function startGame(rowCount, colCount) {
+    brickRowCount = rowCount;
+    brickColumnCount = colCount;
+    createBricks();
+
+    startScreen.style.display = 'none';
+    canvas.style.display = 'block';
+    document.getElementById('rules').style.display = 'block';
+
+    update();
+}
+
+easyBtn.addEventListener('click', () => startGame(9, 5));
+normalBtn.addEventListener('click', () => startGame(9, 7));
+hardBtn.addEventListener('click', () => startGame(9, 11));
+
+// Econst rulesBtn = document.getElementById('rules-btn');
+const closeBtn = document.getElementById('close-btn');
+const rules = document.getElementById('rules');
+
+
 // Crear bloques
-const brick = [];
+
 for (let i = 0; i < brickRowCount; i++) {
     brick[i] = [];
     for (let j = 0; j < brickColumnCount; j++) {
