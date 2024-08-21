@@ -56,21 +56,11 @@ function createBricks() {
 let animationId;
 
 function update() {
-    console.time('update');
-
-    console.time('movePaddle');
     movePaddle();
-    console.timeEnd('movePaddle');
-
-    console.time('moveBall');
     moveBall();
-    console.timeEnd('moveBall');
 
-    console.time('draw');
+    // Dibujar todo de nuevo
     draw();
-    console.timeEnd('draw');
-
-    console.timeEnd('update');
 
     animationId = requestAnimationFrame(update);
 }
@@ -279,4 +269,3 @@ function keyUp(e) {
 // Event Listeners
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
-
