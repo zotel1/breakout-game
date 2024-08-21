@@ -4,6 +4,9 @@ const normalBtn = document.getElementById('normal-btn');
 const hardBtn = document.getElementById('hard-btn');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+const rulesBtn = document.getElementById('rules-btn');
+const closeBtn = document.getElementById('close-btn');
+const rules = document.getElementById('rules');
 
 let score = 0;
 let brickRowCount;
@@ -50,37 +53,26 @@ function createBricks() {
     }
 }
 
-function startGame(rowCount, colCount) {
+const startGame = (rowCount, colCount) => {
     brickRowCount = rowCount;
     brickColumnCount = colCount;
     createBricks();
 
     startScreen.style.display = 'none';
     canvas.style.display = 'block';
-    document.getElementById('rules').style.display = 'block';
+    rules.style.display = 'none'; // Esconder reglas
+    rulesBtn.disabled = true; // Deshabilitar botón de reglas
 
     update();
-}
+};
+
+// Asignar eventos para reglas y cerrar
+rulesBtn.addEventListener('click', () => rules.classList.add('show'));
+closeBtn.addEventListener('click', () => rules.classList.remove('show'));
 
 easyBtn.addEventListener('click', () => startGame(9, 5));
 normalBtn.addEventListener('click', () => startGame(9, 7));
 hardBtn.addEventListener('click', () => startGame(9, 11));
-
-// Econst rulesBtn = document.getElementById('rules-btn');
-const closeBtn = document.getElementById('close-btn');
-const rules = document.getElementById('rules');
-
-
-// Crear bloques
-
-for (let i = 0; i < brickRowCount; i++) {
-    brick[i] = [];
-    for (let j = 0; j < brickColumnCount; j++) {
-        const x = i * (brickInfo.w + brickInfo.padding) + brickInfo.offsetX;
-        const y = j * (brickInfo.h + brickInfo.padding) + brickInfo.offsetY;
-        brick[i][j] = { x, y, ...brickInfo };
-    }
-}
 
 // Dibujar pelota en el canvas
 function drawBall() {
@@ -140,7 +132,7 @@ function moveBall() {
 
     // Colisión con paredes laterales
     if (ball.x + ball.size > canvas.width || ball.x - ball.size < 0) {
-        ball.dx *= -1; // ball.dx = ball.dx * -1
+        ball.dx *= -1;
     }
 
     // Colisión con la parte superior/inferior
@@ -162,10 +154,10 @@ function moveBall() {
         column.forEach(brick => {
             if (brick.visible) {
                 if (
-                    ball.x - ball.size > brick.x && // Verificación lado izquierdo del bloque
-                    ball.x + ball.size < brick.x + brick.w && // Verificación lado derecho del bloque
-                    ball.y + ball.size > brick.y && // Verificación lado superior del bloque
-                    ball.y - ball.size < brick.y + brick.h // Verificación lado inferior del bloque
+                    ball.x - ball.size > brick.x &&
+                    ball.x + ball.size < brick.x + brick.w &&
+                    ball.y + ball.size > brick.y &&
+                    ball.y - ball.size < brick.y + brick.h
                 ) {
                     ball.dy *= -1;
                     brick.visible = false;
@@ -180,6 +172,9 @@ function moveBall() {
     if (ball.y + ball.size > canvas.height) {
         showAllBrick();
         score = 0;
+        alert('¡Perdiste!');
+        startScreen.style.display = 'flex';
+        canvas.style.display = 'none';
     }
 }
 
@@ -201,7 +196,6 @@ function showAllBrick() {
 
 // Dibujar todo
 function draw() {
-    // Limpiar canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawBall();
@@ -210,21 +204,19 @@ function draw() {
     drawBricks();
 }
 
-// Actualizar el canvas y la animación
+// Actualizar la animación del juego
 function update() {
     movePaddle();
     moveBall();
 
-    // Dibujar todo
+    // Dibujar todo de nuevo
     draw();
 
     requestAnimationFrame(update);
 }
 
-update();
-
-// Eventos de teclado
-function handleKeydown(e) {
+// Detectar la tecla presionada
+function keyDown(e) {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
         paddle.dx = paddle.speed;
     } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
@@ -232,7 +224,8 @@ function handleKeydown(e) {
     }
 }
 
-function handleKeyup(e) {
+// Detectar cuando se suelta la tecla
+function keyUp(e) {
     if (
         e.key === 'Right' ||
         e.key === 'ArrowRight' ||
@@ -243,10 +236,6 @@ function handleKeyup(e) {
     }
 }
 
-// Asignar eventos de teclado
-document.addEventListener('keydown', handleKeydown);
-document.addEventListener('keyup', handleKeyup);
-
-// Asignar eventos para reglas y cerrar
-rulesBtn.addEventListener('click', () => rules.classList.add('show'));
-closeBtn.addEventListener('click', () => rules.classList.remove('show'));
+// Event Listeners
+document.addEventListener('keydown', keyDown);
+document.addEventListener('keyup', keyUp);
