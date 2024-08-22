@@ -33,6 +33,8 @@ canvas {
     background: #e94905;
     color: #fff;
     border-radius: 7px;
+    margin-top: 3%;
+    
 }
 
 .btn:focus {
