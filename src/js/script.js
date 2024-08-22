@@ -161,7 +161,7 @@ const resetGame = () => {
 function showGameOverScreen() {
     gameOverScreen.style.display = 'flex';
     canvas.style.display = 'none';
-    setTimeout(resetGame, 1000); // Esperar 3 segundos antes de reiniciar el juego
+    setTimeout(resetGame, 1500); // Esperar 3 segundos antes de reiniciar el juego
 }
 
 rulesBtn.addEventListener('click', () => {
@@ -270,18 +270,18 @@ function keyUp(e) {
 function touchStart(e) {
     const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
     if (touchX < canvas.width / 2) {
-        paddle.dx = -paddle.speed;
+        paddle.dx = paddle.speed; // Mover a la derecha
     } else {
-        paddle.dx = paddle.speed;
+        paddle.dx = -paddle.speed; // Mover a la izquierda
     }
 }
 
 function touchMove(e) {
     const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
     if (touchX < canvas.width / 2) {
-        paddle.dx = -paddle.speed;
+        paddle.dx = paddle.speed; // Mover a la derecha
     } else {
-        paddle.dx = paddle.speed;
+        paddle.dx = -paddle.speed; // Mover a la izquierda
     }
 }
 
