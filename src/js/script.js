@@ -266,22 +266,23 @@ function keyUp(e) {
     }
 }
 
+
 // Soporte táctil
 function touchStart(e) {
-    const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
-    if (touchX < canvas.width / 2) {
-        paddle.dx = paddle.speed; // Mover a la derecha
-    } else {
+    const touchX = e.touches[0].clientX;
+    if (touchX < window.innerWidth / 2) {
         paddle.dx = -paddle.speed; // Mover a la izquierda
+    } else {
+        paddle.dx = paddle.speed; // Mover a la derecha
     }
 }
 
 function touchMove(e) {
-    const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
-    if (touchX < canvas.width / 2) {
-        paddle.dx = paddle.speed; // Mover a la derecha
-    } else {
+    const touchX = e.touches[0].clientX;
+    if (touchX < window.innerWidth / 2) {
         paddle.dx = -paddle.speed; // Mover a la izquierda
+    } else {
+        paddle.dx = paddle.speed; // Mover a la derecha
     }
 }
 
@@ -291,6 +292,6 @@ function touchEnd() {
 
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
-canvas.addEventListener('touchstart', touchStart);
-canvas.addEventListener('touchmove', touchMove);
-canvas.addEventListener('touchend', touchEnd);
+document.addEventListener('touchstart', touchStart);
+document.addEventListener('touchmove', touchMove);
+document.addEventListener('touchend', touchEnd);
