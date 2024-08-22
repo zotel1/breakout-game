@@ -161,7 +161,7 @@ const resetGame = () => {
 function showGameOverScreen() {
     gameOverScreen.style.display = 'flex';
     canvas.style.display = 'none';
-    setTimeout(resetGame, 3000); // Esperar 3 segundos antes de reiniciar el juego
+    setTimeout(resetGame, 1000); // Esperar 3 segundos antes de reiniciar el juego
 }
 
 rulesBtn.addEventListener('click', () => {
