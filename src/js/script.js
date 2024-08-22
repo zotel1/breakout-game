@@ -266,5 +266,32 @@ function keyUp(e) {
     }
 }
 
+// Soporte táctil
+function touchStart(e) {
+    const touchX = e.touches[0].clientX;
+    if (touchX < canvas.width / 2) {
+        paddle.dx = -paddle.speed;
+    } else {
+        paddle.dx = paddle.speed;
+    }
+}
+
+function touchMove(e) {
+    const touchX = e.touches[0].clientX;
+    if (touchX < canvas.width / 2) {
+        paddle.dx = -paddle.speed;
+    } else {
+        paddle.dx = paddle.speed;
+    }
+}
+
+function touchEnd() {
+    paddle.dx = 0;
+}
+
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
+canvas.addEventListener('touchstart', touchStart);
+canvas.addEventListener('touchmove', touchMove);
+canvas.addEventListener('touchend', touchEnd);
+``
