@@ -161,7 +161,7 @@ const resetGame = () => {
 function showGameOverScreen() {
     gameOverScreen.style.display = 'flex';
     canvas.style.display = 'none';
-    setTimeout(resetGame, 1000); // Esperar 3 segundos antes de reiniciar el juego
+    setTimeout(resetGame, 3000); // Esperar 3 segundos antes de reiniciar el juego
 }
 
 rulesBtn.addEventListener('click', () => {
@@ -268,7 +268,7 @@ function keyUp(e) {
 
 // Soporte táctil
 function touchStart(e) {
-    const touchX = e.touches[0].clientX;
+    const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
     if (touchX < canvas.width / 2) {
         paddle.dx = -paddle.speed;
     } else {
@@ -277,7 +277,7 @@ function touchStart(e) {
 }
 
 function touchMove(e) {
-    const touchX = e.touches[0].clientX;
+    const touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
     if (touchX < canvas.width / 2) {
         paddle.dx = -paddle.speed;
     } else {
@@ -294,4 +294,3 @@ document.addEventListener('keyup', keyUp);
 canvas.addEventListener('touchstart', touchStart);
 canvas.addEventListener('touchmove', touchMove);
 canvas.addEventListener('touchend', touchEnd);
-``
